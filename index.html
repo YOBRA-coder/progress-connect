@@ -272,22 +272,19 @@ const SESSION_KEY = 'ybt_session';
 /* ============ AUTH ============ */
 const USERS = {
   admin:    { username:'yobby',  password:'admin2026',  role:'admin',    name:'Yobby' },
-  investor: { username:'judithogal@gmail.com', password:'invest2026', role:'investor', name:'Judith Ogal' }
+  investor: { username:'judith', password:'invest2026', role:'investor', name:'Judith Ogal' }
 };
 let session = null;
 try{ session = JSON.parse(localStorage.getItem(SESSION_KEY)); }catch(e){}
 const isAdmin = ()=> !!(session && session.role==='admin');
 
 let selectedRole = 'admin';
-function updateDemoHint(){
-  const u = USERS[selectedRole];
-  document.getElementById('demoHint').innerHTML = `${selectedRole} login — Username: <b>${u.username}</b> · Password: <b>${u.password}</b>`;
-}
+
 document.querySelectorAll('#roleTabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#roleTabs button').forEach(x=>x.classList.remove('active'));
   b.classList.add('active'); selectedRole = b.dataset.role; updateDemoHint();
 });
-updateDemoHint();
+
 
 document.getElementById('loginBtn').onclick = ()=>{
   const u = document.getElementById('loginUser').value.trim();
