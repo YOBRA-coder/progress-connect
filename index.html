@@ -272,7 +272,7 @@ const SESSION_KEY = 'ybt_session';
 /* ============ AUTH ============ */
 const USERS = {
   admin:    { username:'yobby',  password:'admin2026',  role:'admin',    name:'Yobby' },
-  investor: { username:'judith', password:'invest2026', role:'investor', name:'Judith Ogal' }
+  investor: { username:'judithogal@gmail.com', password:'invest2026', role:'investor', name:'Judith Ogal' }
 };
 let session = null;
 try{ session = JSON.parse(localStorage.getItem(SESSION_KEY)); }catch(e){}
@@ -281,7 +281,7 @@ const isAdmin = ()=> !!(session && session.role==='admin');
 let selectedRole = 'admin';
 function updateDemoHint(){
   const u = USERS[selectedRole];
-  document.getElementById('demoHint').innerHTML = `Demo ${selectedRole} login — Username: <b>${u.username}</b> · Password: <b>${u.password}</b>`;
+  document.getElementById('demoHint').innerHTML = `${selectedRole} login — Username: <b>${u.username}</b> · Password: <b>${u.password}</b>`;
 }
 document.querySelectorAll('#roleTabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#roleTabs button').forEach(x=>x.classList.remove('active'));
@@ -322,8 +322,8 @@ const seed = {
   agreementStart: '2026-09-01',
   investor: { name:'Judith Ogal', commitment:300000, received:150000, structure:'25% share of division net profit, running for 36 months — no equity stake' },
   hotspots: [
-    { id:'h1', name:'Milimani Estate Hotspot', area:'Milimani, Nakuru', status:'live', clients:34, monthly:17000, launched:'2026-09-03' },
-    { id:'h2', name:'Section 58 Hotspot', area:'Section 58, Nakuru', status:'live', clients:21, monthly:10500, launched:'2026-09-06' },
+    { id:'h1', name:'Milimani Estate Hotspot', area:'Milimani, Nakuru', status:'live', clients:30, monthly:15000, launched:'2026-09-03' },
+    { id:'h2', name:'Section 58 Hotspot', area:'Section 58, Nakuru', status:'live', clients:17, monthly:10500, launched:'2026-09-06' },
     { id:'h3', name:'Kaptembwo Community Hotspot', area:'Kaptembwo, Nakuru', status:'setup', clients:0, monthly:0, launched:null },
     { id:'h4', name:'London Estate Hotspot', area:'London Estate, Nakuru', status:'plan', clients:0, monthly:0, launched:null }
   ],
@@ -347,7 +347,7 @@ const seed = {
   progress: [
     { date:'2026-09-01', title:'Agreement signed & capital received', note:'Investor tranche of KES 150,000 received from Judith Ogal against the KES 300,000 commitment.' },
     { date:'2026-09-02', title:'Equipment & stock procured', note:'Tools, Cat6 cabling stock and initial router/AP inventory purchased.' },
-    { date:'2026-09-03', title:'Milimani Estate hotspot went live', note:'First hotspot switched on; 34 clients connected in the opening days.' },
+    { date:'2026-09-03', title:'Milimani Estate hotspot went live', note:'First hotspot switched on; 30 clients connected in the opening days.' },
     { date:'2026-09-05', title:'Technician team on-boarded', note:'Two field technicians started, covering Milimani and Section 58.' },
     { date:'2026-09-06', title:'Section 58 hotspot went live', note:'Second hotspot launched — expansion within Nakuru town, no new towns yet.' },
     { date:'2026-09-08', title:'Week 1 close-out', note:'Two hotspots live, Kaptembwo in setup, London Estate planned next. Still Nakuru-only by design for Phase 1.' }
