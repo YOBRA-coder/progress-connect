@@ -315,44 +315,702 @@ function showApp(){
   buildNav(); render();
 }
 
+
 const seed = {
   agreementStart: '2026-09-01',
-  investor: { name:'Judith Ogal', commitment:300000, received:150000, structure:'25% share of division net profit, running for 36 months — no equity stake' },
+  reporting: {
+    currency: 'KES',
+    period: 'weekly',
+    weekStartsOn: 'Monday',
+    lastUpdated: '2026-11-01',
+    accountingBasis: 'cash',
+    note: 'New weekly figures after 2026-09-12 are illustrative seed data.'
+  },
+
+  investor: {
+    name: 'Judith Ogal',
+    commitment: 300000,
+    received: 150000,
+    outstanding: 150000,
+    structure: '25% share of division net profit, running for 36 months — no equity stake',
+    profitSharePercent: 25,
+    durationMonths: 36,
+    equityStake: false
+  },
+
   hotspots: [
-    { id:'h1', name:'Milimani Estate Hotspot', area:'Milimani, Nakuru', status:'live', clients:15, monthly:15000, launched:'2026-09-03' },
-    { id:'h2', name:'Section 58 Hotspot', area:'Section 58, Nakuru', status:'live', clients:13, monthly:13000, launched:'2026-09-06' },
-    { id:'h3', name:'Kaptembwo Community Hotspot', area:'Kaptembwo, Nakuru', status:'setup', clients:0, monthly:0, launched:null },
-    { id:'h4', name:'London Estate Hotspot', area:'London Estate, Nakuru', status:'plan', clients:0, monthly:0, launched:null }
+    {
+      id: 'h1',
+      name: 'Milimani Estate Hotspot',
+      area: 'Milimani, Nakuru',
+      status: 'live',
+      clients: 15,
+      monthly: 15000,
+      launched: '2026-09-03'
+    },
+    {
+      id: 'h2',
+      name: 'Section 58 Hotspot',
+      area: 'Section 58, Nakuru',
+      status: 'live',
+      clients: 13,
+      monthly: 13000,
+      launched: '2026-09-06'
+    },
+    {
+      id: 'h3',
+      name: 'Kaptembwo Community Hotspot',
+      area: 'Kaptembwo, Nakuru',
+      status: 'setup',
+      clients: 0,
+      monthly: 0,
+      launched: null
+    },
+    {
+      id: 'h4',
+      name: 'London Estate Hotspot',
+      area: 'London Estate, Nakuru',
+      status: 'plan',
+      clients: 0,
+      monthly: 0,
+      launched: null
+    }
   ],
+
+  // All financial movements.
+  // type: in = money received, out = money paid.
   income: [
-    { id:1, date:'2026-09-01', type:'in',  desc:'Investor tranche received — Judith Ogal', amount:150000 },
-    { id:2, date:'2026-09-01', type:'out', desc:'Networking tools & equipment (crimpers, testers, drill set)', amount:22000 },
-    { id:3, date:'2026-09-02', type:'out', desc:'Cabling stock — Cat6 rolls, RJ45, trunking', amount:31000 },
-    { id:4, date:'2026-09-02', type:'out', desc:'Router & access-point inventory', amount:18000 },
-    { id:5, date:'2026-09-03', type:'in',  desc:'Milimani Hotspot — client connection fees (first batch)', amount:6800 },
-    { id:6, date:'2026-09-04', type:'in',  desc:'Milimani Hotspot — daily client top-ups', amount:3400 },
-    { id:7, date:'2026-09-05', type:'out', desc:'Technician wages — Week 1 and 2', amount:9000 },
-    { id:8, date:'2026-09-06', type:'in',  desc:'Section 58 Hotspot — launch-week client payments', amount:6400 },
-    { id:9, date:'2026-09-07', type:'in',  desc:'Milimani + Section 58 — daily client top-ups', amount:3800 },
-    { id:10,date:'2026-09-08', type:'in',  desc:'Weekly maintenance retainers (10 clients)', amount:6000 },
-    { id:11,date:'2026-09-11', type:'out', desc:'Branding and Marketing', amount:10000 },
-    { id:12, date:'2026-09-12', type:'in',  desc:'Milimani + Section 58 — daily client top-ups', amount:6800 }
-  
+    // INITIAL INVESTMENT AND SETUP
+
+    {
+      id: 1,
+      date: '2026-09-01',
+      type: 'in',
+      category: 'capital',
+      desc: 'Investor tranche received — Judith Ogal',
+      amount: 150000
+    },
+    {
+      id: 2,
+      date: '2026-09-01',
+      type: 'out',
+      category: 'equipment',
+      desc: 'Networking tools and equipment',
+      amount: 22000
+    },
+    {
+      id: 3,
+      date: '2026-09-02',
+      type: 'out',
+      category: 'inventory',
+      desc: 'Cat6 rolls, RJ45 connectors and trunking',
+      amount: 31000
+    },
+    {
+      id: 4,
+      date: '2026-09-02',
+      type: 'out',
+      category: 'inventory',
+      desc: 'Router and access-point inventory',
+      amount: 18000
+    },
+
+    // INITIAL CUSTOMER REVENUE
+
+    {
+      id: 5,
+      date: '2026-09-03',
+      type: 'in',
+      category: 'installation',
+      hotspotId: 'h1',
+      desc: 'Milimani — first batch connection fees',
+      amount: 6800
+    },
+    {
+      id: 6,
+      date: '2026-09-04',
+      type: 'in',
+      category: 'subscription',
+      hotspotId: 'h1',
+      desc: 'Milimani — customer top-ups',
+      amount: 3400
+    },
+    {
+      id: 7,
+      date: '2026-09-05',
+      type: 'out',
+      category: 'salary',
+      desc: 'Technician salaries — September weeks 1 and 2',
+      amount: 9000
+    },
+    {
+      id: 8,
+      date: '2026-09-06',
+      type: 'in',
+      category: 'subscription',
+      hotspotId: 'h2',
+      desc: 'Section 58 — launch-week customer payments',
+      amount: 6400
+    },
+    {
+      id: 9,
+      date: '2026-09-07',
+      type: 'in',
+      category: 'subscription',
+      desc: 'Milimani and Section 58 — customer top-ups',
+      amount: 3800
+    },
+    {
+      id: 10,
+      date: '2026-09-08',
+      type: 'in',
+      category: 'maintenance',
+      desc: 'Weekly maintenance retainers — 10 clients',
+      amount: 6000
+    },
+    {
+      id: 11,
+      date: '2026-09-11',
+      type: 'out',
+      category: 'marketing',
+      desc: 'Branding and marketing',
+      amount: 10000
+    },
+    {
+      id: 12,
+      date: '2026-09-12',
+      type: 'in',
+      category: 'subscription',
+      desc: 'Milimani and Section 58 — customer top-ups',
+      amount: 6800
+    },
+
+    // WEEK 3: SEPTEMBER 14–20
+
+    {
+      id: 13,
+      date: '2026-09-20',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 3',
+      amount: 7200,
+      periodStart: '2026-09-14',
+      periodEnd: '2026-09-20'
+    },
+    {
+      id: 14,
+      date: '2026-09-19',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-09-14',
+      periodEnd: '2026-09-20'
+    },
+    {
+      id: 15,
+      date: '2026-09-19',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-09-14',
+      periodEnd: '2026-09-20'
+    },
+    {
+      id: 16,
+      date: '2026-09-20',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 17,
+      date: '2026-09-20',
+      type: 'out',
+      category: 'transport',
+      desc: 'Field technician transport',
+      amount: 1000
+    },
+
+    // WEEK 4: SEPTEMBER 21–27
+
+    {
+      id: 18,
+      date: '2026-09-27',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 4',
+      amount: 7600,
+      periodStart: '2026-09-21',
+      periodEnd: '2026-09-27'
+    },
+    {
+      id: 19,
+      date: '2026-09-26',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-09-21',
+      periodEnd: '2026-09-27'
+    },
+    {
+      id: 20,
+      date: '2026-09-26',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-09-21',
+      periodEnd: '2026-09-27'
+    },
+    {
+      id: 21,
+      date: '2026-09-27',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 22,
+      date: '2026-09-27',
+      type: 'out',
+      category: 'transport',
+      desc: 'Field operations and transport',
+      amount: 800
+    },
+
+    // WEEK 5: SEPTEMBER 28 – OCTOBER 4
+
+    {
+      id: 23,
+      date: '2026-10-04',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 5',
+      amount: 7900,
+      periodStart: '2026-09-28',
+      periodEnd: '2026-10-04'
+    },
+    {
+      id: 24,
+      date: '2026-10-03',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-09-28',
+      periodEnd: '2026-10-04'
+    },
+    {
+      id: 25,
+      date: '2026-10-03',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-09-28',
+      periodEnd: '2026-10-04'
+    },
+    {
+      id: 26,
+      date: '2026-10-04',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 27,
+      date: '2026-10-04',
+      type: 'out',
+      category: 'utilities',
+      desc: 'Electricity and hotspot power',
+      amount: 900
+    },
+
+    // WEEK 6: OCTOBER 5–11
+
+    {
+      id: 28,
+      date: '2026-10-11',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 6',
+      amount: 8200,
+      periodStart: '2026-10-05',
+      periodEnd: '2026-10-11'
+    },
+    {
+      id: 29,
+      date: '2026-10-10',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-10-05',
+      periodEnd: '2026-10-11'
+    },
+    {
+      id: 30,
+      date: '2026-10-10',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-10-05',
+      periodEnd: '2026-10-11'
+    },
+    {
+      id: 31,
+      date: '2026-10-11',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 32,
+      date: '2026-10-11',
+      type: 'out',
+      category: 'maintenance',
+      desc: 'Network maintenance and replacement connectors',
+      amount: 1200
+    },
+
+    // WEEK 7: OCTOBER 12–18
+
+    {
+      id: 33,
+      date: '2026-10-18',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 7',
+      amount: 8500,
+      periodStart: '2026-10-12',
+      periodEnd: '2026-10-18'
+    },
+    {
+      id: 34,
+      date: '2026-10-17',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-10-12',
+      periodEnd: '2026-10-18'
+    },
+    {
+      id: 35,
+      date: '2026-10-17',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-10-12',
+      periodEnd: '2026-10-18'
+    },
+    {
+      id: 36,
+      date: '2026-10-18',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 37,
+      date: '2026-10-18',
+      type: 'out',
+      category: 'transport',
+      desc: 'Field operations and transport',
+      amount: 1000
+    },
+
+    // WEEK 8: OCTOBER 19–25
+
+    {
+      id: 38,
+      date: '2026-10-25',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 8',
+      amount: 8800,
+      periodStart: '2026-10-19',
+      periodEnd: '2026-10-25'
+    },
+    {
+      id: 39,
+      date: '2026-10-24',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-10-19',
+      periodEnd: '2026-10-25'
+    },
+    {
+      id: 40,
+      date: '2026-10-24',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-10-19',
+      periodEnd: '2026-10-25'
+    },
+    {
+      id: 41,
+      date: '2026-10-25',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 42,
+      date: '2026-10-25',
+      type: 'out',
+      category: 'marketing',
+      desc: 'Local hotspot customer acquisition',
+      amount: 1500
+    },
+
+    // WEEK 9: OCTOBER 26 – NOVEMBER 1
+
+    {
+      id: 43,
+      date: '2026-11-01',
+      type: 'in',
+      category: 'weekly_revenue',
+      desc: 'Weekly hotspot collections — Week 9',
+      amount: 9100,
+      periodStart: '2026-10-26',
+      periodEnd: '2026-11-01'
+    },
+    {
+      id: 44,
+      date: '2026-10-31',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — D. Kiplangat',
+      amount: 2250,
+      employeeId: 1,
+      periodStart: '2026-10-26',
+      periodEnd: '2026-11-01'
+    },
+    {
+      id: 45,
+      date: '2026-10-31',
+      type: 'out',
+      category: 'salary',
+      desc: 'Weekly salary — B. Wanjiru',
+      amount: 2250,
+      employeeId: 2,
+      periodStart: '2026-10-26',
+      periodEnd: '2026-11-01'
+    },
+    {
+      id: 46,
+      date: '2026-11-01',
+      type: 'out',
+      category: 'internet',
+      desc: 'Weekly upstream internet bandwidth',
+      amount: 1800
+    },
+    {
+      id: 47,
+      date: '2026-11-01',
+      type: 'out',
+      category: 'utilities',
+      desc: 'Electricity and hotspot power',
+      amount: 900
+    }
   ],
+
+  // WEEKLY PERFORMANCE SUMMARY.
+  // Revenue and expenses reconcile with transactions above.
+  weeklyEarnings: [
+    {
+      week: 3,
+      start: '2026-09-14',
+      end: '2026-09-20',
+      revenue: 7200,
+      salaries: 4500,
+      expenses: 2800,
+      totalExpenses: 7300,
+      netProfit: -100,
+      status: 'closed'
+    },
+    {
+      week: 4,
+      start: '2026-09-21',
+      end: '2026-09-27',
+      revenue: 7600,
+      salaries: 4500,
+      expenses: 2600,
+      totalExpenses: 7100,
+      netProfit: 500,
+      status: 'closed'
+    },
+    {
+      week: 5,
+      start: '2026-09-28',
+      end: '2026-10-04',
+      revenue: 7900,
+      salaries: 4500,
+      expenses: 2700,
+      totalExpenses: 7200,
+      netProfit: 700,
+      status: 'closed'
+    },
+    {
+      week: 6,
+      start: '2026-10-05',
+      end: '2026-10-11',
+      revenue: 8200,
+      salaries: 4500,
+      expenses: 3000,
+      totalExpenses: 7500,
+      netProfit: 700,
+      status: 'closed'
+    },
+    {
+      week: 7,
+      start: '2026-10-12',
+      end: '2026-10-18',
+      revenue: 8500,
+      salaries: 4500,
+      expenses: 2800,
+      totalExpenses: 7300,
+      netProfit: 1200,
+      status: 'closed'
+    },
+    {
+      week: 8,
+      start: '2026-10-19',
+      end: '2026-10-25',
+      revenue: 8800,
+      salaries: 4500,
+      expenses: 3300,
+      totalExpenses: 7800,
+      netProfit: 1000,
+      status: 'closed'
+    },
+    {
+      week: 9,
+      start: '2026-10-26',
+      end: '2026-11-01',
+      revenue: 9100,
+      salaries: 4500,
+      expenses: 2700,
+      totalExpenses: 7200,
+      netProfit: 1900,
+      status: 'closed'
+    }
+  ],
+
   team: [
-    { id:1, name:'D. Kiplangat', role:'Lead Field Technician', area:'Milimani' },
-    { id:2, name:'B. Wanjiru', role:'Installation Technician', area:'Section 58' },
-    { id:3, name:'Yobby', role:'Founder — Systems & Billing Dashboard', area:'All sites' }
+    {
+      id: 1,
+      name: 'D. Kiplangat',
+      role: 'Lead Field Technician',
+      area: 'Milimani',
+      salary: 2250,
+      salaryFrequency: 'weekly',
+      paymentDay: 'Saturday',
+      status: 'active'
+    },
+    {
+      id: 2,
+      name: 'B. Wanjiru',
+      role: 'Installation Technician',
+      area: 'Section 58',
+      salary: 2250,
+      salaryFrequency: 'weekly',
+      paymentDay: 'Saturday',
+      status: 'active'
+    },
+    {
+      id: 3,
+      name: 'Yobby',
+      role: 'Founder — Systems & Billing Dashboard',
+      area: 'All sites',
+      salary: 0,
+      salaryFrequency: 'not configured',
+      status: 'active'
+    }
   ],
+
   progress: [
-    { date:'2026-09-01', title:'Agreement signed & capital received', note:'Investor tranche of KES 150,000 received from Judith Ogal against the KES 300,000 commitment.' },
-    { date:'2026-09-02', title:'Equipment & stock procured', note:'Tools, Cat6 cabling stock and initial router/AP inventory purchased.' },
-    { date:'2026-09-03', title:'Milimani Estate hotspot went live', note:'First hotspot switched on; 30 clients connected in the opening days.' },
-    { date:'2026-09-05', title:'Technician team on-boarded', note:'Two field technicians started, covering Milimani and Section 58.' },
-    { date:'2026-09-06', title:'Section 58 hotspot went live', note:'Second hotspot launched — expansion within Nakuru town, no new towns yet.' },
-    { date:'2026-09-08', title:'Week 1 close-out', note:'Two hotspots live, Kaptembwo in setup, London Estate planned next. Still Nakuru-only by design for Phase 1.' }
+    {
+      date: '2026-09-01',
+      title: 'Agreement signed and capital received',
+      note: 'Judith Ogal committed KES 300,000. First tranche of KES 150,000 received.'
+    },
+    {
+      date: '2026-09-02',
+      title: 'Equipment and stock procured',
+      note: 'Networking tools, Cat6 cabling and initial router/AP inventory purchased.'
+    },
+    {
+      date: '2026-09-03',
+      title: 'Milimani Estate hotspot launched',
+      note: 'First hotspot activated. Initial customer connections recorded.'
+    },
+    {
+      date: '2026-09-05',
+      title: 'Technician team onboarded',
+      note: 'Two field technicians started operations. Initial salary payment covered the first two weeks.'
+    },
+    {
+      date: '2026-09-06',
+      title: 'Section 58 hotspot launched',
+      note: 'Second hotspot activated, expanding Nakuru coverage.'
+    },
+    {
+      date: '2026-09-08',
+      title: 'Initial operational review',
+      note: 'Two hotspots live, Kaptembwo in setup and London Estate planned.'
+    },
+    {
+      date: '2026-09-20',
+      title: 'Weekly revenue reporting introduced',
+      note: 'Weekly collections, payroll, bandwidth and transport costs tracked separately.'
+    },
+    {
+      date: '2026-10-04',
+      title: 'First month of weekly operations completed',
+      note: 'Weekly financial reporting and technician payroll established.'
+    },
+    {
+      date: '2026-10-18',
+      title: 'Network operations stabilized',
+      note: 'Recurring bandwidth, utilities and maintenance expenses incorporated into weekly reporting.'
+    },
+    {
+      date: '2026-11-01',
+      title: 'November reporting baseline',
+      note: 'Two live hotspots, 28 recorded clients and weekly collections of KES 9,100 in the latest reporting week.'
+    }
   ]
 };
+
 
 function loadData(){
   const raw = localStorage.getItem(STORE_KEY);
