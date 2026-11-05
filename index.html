@@ -97,11 +97,14 @@ p.page-sub{color:var(--ink-soft);margin:0 0 18px;font-size:13.5px}
 .panel h2{font-size:15px;margin:0 0 12px;font-weight:700}
 .row-between{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 
-.bars{display:flex;align-items:flex-end;gap:6px;height:110px;margin-top:8px}
-.bars .bar{flex:1;border-radius:6px 6px 0 0;background:var(--accent);position:relative;min-height:4px;transition:height .5s ease}
+.cashflow-viewport{width:100%;overflow-x:auto;overflow-y:hidden;padding:8px 2px 2px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.cashflow-inner{min-width:100%;width:max(100%,calc(var(--bar-count,7) * 44px))}
+.bars{display:flex;align-items:flex-end;gap:6px;height:124px;margin-top:8px;min-width:100%}
+.bars .bar{flex:1 0 32px;border-radius:6px 6px 0 0;background:var(--accent);position:relative;min-height:4px;transition:height .5s ease}
 .bars .bar span{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--ink-soft);white-space:nowrap}
-.bars-labels{display:flex;gap:6px;margin-top:6px}
-.bars-labels span{flex:1;text-align:center;font-size:10px;color:var(--ink-soft)}
+.bars-labels{display:flex;gap:6px;margin-top:6px;min-width:100%}
+.bars-labels span{flex:1 0 32px;text-align:center;font-size:10px;color:var(--ink-soft);white-space:nowrap}
+.cashflow-hint{font-size:10.5px;color:var(--ink-soft);margin-top:7px}
 
 .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
 .badge.live{background:rgba(30,142,90,.15);color:var(--good)}
@@ -345,7 +348,7 @@ const seed = {
       area: 'Milimani, Nakuru',
       status: 'live',
       clients: 15,
-      monthly: 15000,
+      monthly: 12000,
       launched: '2026-09-03'
     },
     {
@@ -354,7 +357,7 @@ const seed = {
       area: 'Section 58, Nakuru',
       status: 'live',
       clients: 13,
-      monthly: 13000,
+      monthly: 10000,
       launched: '2026-09-06'
     },
     {
@@ -595,7 +598,7 @@ const seed = {
       type: 'in',
       category: 'weekly_revenue',
       desc: 'Weekly hotspot collections — Week 5',
-      amount: 7900,
+      amount: 5900,
       periodStart: '2026-09-28',
       periodEnd: '2026-10-04'
     },
@@ -646,7 +649,7 @@ const seed = {
       type: 'in',
       category: 'weekly_revenue',
       desc: 'Weekly hotspot collections — Week 6',
-      amount: 8200,
+      amount: 6200,
       periodStart: '2026-10-05',
       periodEnd: '2026-10-11'
     },
@@ -697,7 +700,7 @@ const seed = {
       type: 'in',
       category: 'weekly_revenue',
       desc: 'Weekly hotspot collections — Week 7',
-      amount: 8500,
+      amount: 5500,
       periodStart: '2026-10-12',
       periodEnd: '2026-10-18'
     },
@@ -799,7 +802,7 @@ const seed = {
       type: 'in',
       category: 'weekly_revenue',
       desc: 'Weekly hotspot collections — Week 9',
-      amount: 9100,
+      amount: 4100,
       periodStart: '2026-10-26',
       periodEnd: '2026-11-01'
     },
@@ -1081,18 +1084,24 @@ function render(){
   if(current==='reports') main.innerHTML = viewReports();
   wireView();
 }
-
+/*
+ <div class="kpi"><div class="lbl">Total revenue</div><div class="val">${fmt(totalIn())}</div><div class="sub">Since agreement start</div></div>
+*/
 function viewOverview(){
   const days = data.income.reduce((m,i)=>{ m[i.date]=(m[i.date]||0)+(i.type==='in'?i.amount:-i.amount); return m; },{});
   const dkeys = Object.keys(days).sort();
   const max = Math.max(...dkeys.map(k=>Math.abs(days[k])),1000);
   const pct = Math.min(100, Math.round(data.investor.received/data.investor.commitment*100));
+ const chartTitle = isAdmin() ? 'Daily cash flow' : 'Daily spending';
+  const chartBars = dkeys.map(k=>`<div class="bar" style="height:${Math.max(6,Math.abs(days[k])/max*100)}%;background:${days[k]<0?'var(--danger)':'var(--accent)'}"><span>${(days[k]>=0?'+':'')+(days[k]/1000).toFixed(1)+'k'}</span></div>`).join('');
+  const chartLabels = dkeys.map(k=>`<span>${dateShort(k)}</span>`).join('');
   return `
   <h1 class="page-title">Overview</h1>
   <p class="page-sub">Agreement started ${dateShort(data.agreementStart)}, 2026 · Nakuru-based connectivity &amp; hotspot division</p>
 
   <div class="grid">
-    <div class="kpi"><div class="lbl">Total revenue</div><div class="val">${fmt(totalIn())}</div><div class="sub">Since agreement start</div></div>
+     <div class="kpi"><div class="lbl">Amount Invested</div><div class="val">${fmt(data.investor.received)}</div><div class="sub">received of ${fmt(data.investor.commitment)} committed. ${fmt(data.investor.commitment-data.investor.received)} remaining to full commitment.</div></div>
+   
     <div class="kpi"><div class="lbl">Net profit</div><div class="val">${fmt(netProfit())}</div><div class="sub">After ${fmt(totalOut())} expenses</div></div>
     <div class="kpi"><div class="lbl">Investor share (25%)</div><div class="val">${fmt(investorShare())}</div><div class="sub">Accrued so far</div></div>
     <div class="kpi"><div class="lbl">Active hotspots</div><div class="val">${activeHotspots()} <span style="font-size:13px;color:var(--ink-soft)">/ ${data.hotspots.length}</span></div><div class="sub">${totalClients()} clients connected</div></div>
@@ -1110,16 +1119,18 @@ function viewOverview(){
     <div class="progress-bar"><i style="width:${pct}%"></i></div>
   </div>
 
-  <div class="panel">
-    <h2>Daily cash flow — first week</h2>
-    <div class="bars">${dkeys.map(k=>`<div class="bar" style="height:${Math.max(6,Math.abs(days[k])/max*100)}%;background:${days[k]<0?'var(--danger)':'var(--accent)'}"><span>${(days[k]>=0?'+':'')+ (days[k]/1000).toFixed(1)+'k'}</span></div>`).join('')}</div>
-    <div class="bars-labels">${dkeys.map(k=>`<span>${dateShort(k)}</span>`).join('')}</div>
+ <div class="panel">
+    <h2>${chartTitle}</h2>
+    <div class="cashflow-viewport"><div class="cashflow-inner" style="--bar-count:${Math.max(dkeys.length,1)}">
+      <div class="bars">${chartBars}</div>
+      <div class="bars-labels">${chartLabels}</div>
+    </div></div>
+    <div class="cashflow-hint">${isAdmin()?'Daily net movement from the recorded ledger, including capital receipts.':'Daily recorded expenses only. Swipe horizontally to view all dates.'}</div>
   </div>
-
   <div class="panel">
     <h2>Latest activity</h2>
     <div class="timeline">
-      ${data.progress.slice().reverse().slice(0,4).map(p=>`<div class="tl-item"><div class="d">${dateShort(p.date)}, 2026</div><div class="t">${p.title}</div><div class="n">${p.note}</div></div>`).join('')}
+      ${data.progress.slice().reverse().slice(0,4).map(p=>`<div class="tl-item"><div class="d">${dateShort(p.date)}, 2026</div><div class="t">${p.title}</div>${isAdmin()?`<div class="n">${p.note}</div>`:''}</div>`).join('')}
     </div>
   </div>`;
 }
